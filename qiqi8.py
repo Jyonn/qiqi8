@@ -15,11 +15,13 @@ def image_reply(msg):
     gif_file_name = msg.fileName+'.gif'
     if msg.FromUserName in DealDict:
         return '您有图片正在处理，请稍后重试'
-    elif len(DealDict) > 10:
-        return '当前处理用户超过10人，请稍后重试'
+    elif len(DealDict) >= 4:
+        return '当前处理用户超过4人，请稍后重试'
     DealDict.append(msg.FromUserName)
     try:
         image = Image.open(msg.fileName)
+        if image.format == 'GIF':
+            return '这张图片可以直接存表情哦'
         w, h = image.size
         if w > 500:
             image = image.resize((500, int(h * 500 / w)), Image.ANTIALIAS)
@@ -38,6 +40,12 @@ def image_reply(msg):
         os.remove('./'+msg.fileName)
 
 
+@itchat.msg_register(itchat.content.TEXT)
+def text_redirect(msg):
+    itchat.send(msg.User['NickName'] + ' : ' + msg.Text, toUserName=MyUserName)
+
+
+Thread(target=itchat.run).start()
 Thread(target=itchat.run).start()
 Thread(target=itchat.run).start()
 Thread(target=itchat.run).start()
