@@ -4,7 +4,7 @@ from PIL import Image
 from threading import Thread
 
 itchat.auto_login(hotReload=True, enableCmdQR=True)
-MyUserName = itchat.search_friends(nickName='啦啦啦被煮')[0]['UserName']
+my_user_name = itchat.search_friends(nickName='啦啦啦被煮')[0]['UserName']
 
 DealDict = []
 
@@ -30,8 +30,8 @@ def image_reply(msg):
             image = image.resize((int(w * 500 / h), 500), Image.ANTIALIAS)
         image.save(gif_file_name, 'GIF')
         itchat.send_image(gif_file_name, toUserName=msg.FromUserName)
-        itchat.send(msg.User['NickName'] + '发送了一张图片', toUserName=MyUserName)
-        itchat.send_image(gif_file_name, toUserName=MyUserName)
+        itchat.send(msg.User['NickName'] + '发送了一张图片', toUserName=my_user_name)
+        itchat.send_image(gif_file_name, toUserName=my_user_name)
         os.remove('./'+gif_file_name)
     except:
         return '图片转换失败'
@@ -42,7 +42,15 @@ def image_reply(msg):
 
 @itchat.msg_register(itchat.content.TEXT)
 def text_redirect(msg):
-    itchat.send(msg.User['NickName'] + ' : ' + msg.Text, toUserName=MyUserName)
+    if msg.FromUserName == my_user_name:
+        try:
+            from_user_name = msg.Text[:msg.Text.find(',')]
+            text = msg.Text[msg.Text.find(' :')+2:]
+            itchat.send(text, toUserName=from_user_name)
+        except:
+            pass
+    itchat.send(
+        '%s,%s : %s' % (msg.FromUserName, msg.User['NickName'], msg.Text), toUserName=my_user_name)
 
 
 Thread(target=itchat.run).start()
