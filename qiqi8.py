@@ -49,6 +49,7 @@ def text_redirect(msg):
             itchat.send(text, toUserName=from_user_name)
         except:
             pass
+        return
     itchat.send(
         '%s,%s : %s' % (msg.FromUserName, msg.User['NickName'], msg.Text), toUserName=my_user_name)
 
