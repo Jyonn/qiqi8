@@ -3,7 +3,7 @@ import os
 from PIL import Image
 from threading import Thread
 
-itchat.auto_login(hotReload=True)
+itchat.auto_login(hotReload=True, enableCmdQR=True)
 MyUserName = itchat.search_friends(nickName='啦啦啦被煮')[0]['UserName']
 
 DealDict = []
